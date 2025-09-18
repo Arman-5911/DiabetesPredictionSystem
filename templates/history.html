@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow p-4">
+  <h2 class="mb-4">Prediction History</h2>
+
+  <div class="row">
+    <div class="col-md-8">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th><th>Glucose</th><th>BMI</th><th>Age</th><th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in predictions %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.glucose }}</td>
+            <td>{{ p.bmi }}</td>
+            <td>{{ p.age }}</td>
+            <td>
+              <span class="badge {% if p.result=='Diabetic' %}bg-danger{% else %}bg-success{% endif %}">
+                {{ p.result }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-4">
+      <canvas id="summaryChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+const ctx = document.getElementById('summaryChart');
+const data = {
+  labels: ['Diabetic', 'Not Diabetic'],
+  datasets: [{
+    data: {{ chart_data | safe }},
+    backgroundColor: ['#dc3545', '#198754']
+  }]
+};
+new Chart(ctx, { type: 'pie', data: data });
+</script>
+{% endblock %}
